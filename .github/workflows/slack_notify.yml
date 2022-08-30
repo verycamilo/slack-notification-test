@@ -1,0 +1,24 @@
+name: Slack Notification
+
+on:
+  workflow_run:
+    workflows:
+      - Test, Build, and Deploy
+    types:
+      - completed
+
+jobs:
+  slackNotification:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Send Slack Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: redwolf-cloud-ci-cd-notifications
+          SLACK_TITLE: 'DMS: Deploy of ${{ github.ref_name }} ${{ github.event.workflow_run.conclusion}}'
+          SLACK_USERNAME: AccountIdentityBot
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ github.event.workflow_run.conclusion}}
