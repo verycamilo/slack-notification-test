@@ -23,4 +23,4 @@ jobs:
           SLACK_USERNAME: AccountIdentityBot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ github.event.workflow_run.conclusion}}
-          SLACK_FOOTER: ${{ github.event.workflow_run.jobs_url }}
+          SLACK_FOOTER: ${{ github.event.workflow_run.html_url }}
