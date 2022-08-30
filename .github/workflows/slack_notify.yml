@@ -19,6 +19,7 @@ jobs:
         env:
           SLACK_CHANNEL: redwolf-cloud-ci-cd-notifications
           SLACK_TITLE: 'DMS: Deploy of ${{ github.ref_name }} ${{ github.event.workflow_run.conclusion}}'
+          SLACK_MESSAGE: ${{ github.event.head_commit.message }}
           SLACK_USERNAME: AccountIdentityBot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ github.event.workflow_run.conclusion}}
