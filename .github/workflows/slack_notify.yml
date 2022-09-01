@@ -6,6 +6,7 @@ on:
       - Test, Build, and Deploy
     types:
       - completed
+      - requested
 
 jobs:
   slackNotification:
@@ -18,9 +19,9 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_CHANNEL: redwolf-cloud-ci-cd-notifications
-          SLACK_TITLE: 'DMS: Deploy of ${{ github.ref_name }} ${{ github.event.workflow_run.conclusion}}'
+          SLACK_TITLE: 'DMS: event: ${{ github.event.action }} action: ${{ github.action }} Deploy of ${{ github.ref_name }} ${{ github.event.workflow_run.conclusion}}'
           SLACK_MESSAGE: ${{ github.event.workflow_run.head_commit.message }}
-          SLACK_USERNAME: AccountIdentityBot
+          SLACK_USERNAME: GithubBot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ github.event.workflow_run.conclusion}}
           SLACK_FOOTER: ${{ github.event.workflow_run.html_url }}
