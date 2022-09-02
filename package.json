@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "echo 'Linting' && exit 0",
+    "lint": "echo 'Linting' && exit 1",
     "deploy": "echo 'Deployed'"
   },
   "repository": {
