@@ -19,7 +19,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_CHANNEL: redwolf-cloud-ci-cd-notifications
-          SLACK_TITLE: 'DMS: Start deploy of ${{ github.ref_name }}'
+          SLACK_TITLE: 'DMS: Start deploy of ${{ github.event.workflow_run.head_branch }}'
           SLACK_MESSAGE: ${{ github.event.workflow_run.head_commit.message }}
           SLACK_USERNAME: SuperNeatoGithubBot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
