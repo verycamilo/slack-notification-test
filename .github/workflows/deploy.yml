@@ -2,7 +2,7 @@ name: Test, Build, and Deploy
 
 on:
   push:
-    branches: ['main', 'develop']
+    branches: ['main', 'develop', 'CSID**', 'release/**']
 
 jobs:
   install-dependencies:
