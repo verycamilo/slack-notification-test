@@ -25,7 +25,7 @@ jobs:
           curl -v  \
           -X POST \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.SPECS_REPO_PAT }}" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           --url https://api.github.com/repos/verycamilo/swagger-ci-cd-poc/dispatches \
           -d @payload.json
 
