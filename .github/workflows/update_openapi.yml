@@ -29,8 +29,11 @@ jobs:
         # working-directory: ./documentation
         run: |
           export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
+          export PAYLOAD_TEMPLATE='{"event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v1", "doc": "BASE64_APIDOC"}}'
+          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" '.doc = $BASE64_APIDOC' > payload.json
+          cat payload.json
           curl -X POST \
           -H "Accept: application/vnd.github+json" \ 
           -H "Authorization: Bearer ${{ secrets.SPECS_REPO_PAT }}" \
           https://api.github.com/repos/verycamilo/swagger-ci-cd-poc/dispatches \
-          -d '{"event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v1", "doc": "${BASE64_APIDOC}"}}'
+          -d @payload.json
