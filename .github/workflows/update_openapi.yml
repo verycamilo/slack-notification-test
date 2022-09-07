@@ -18,13 +18,13 @@ jobs:
         uses: actions/checkout@v3
       - name: List files
         run: ls -ltah ${{ github.workspace }}
-      - name: Encode API Doc 
-        run: |
-          export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
-          echo $BASE64_APIDOC
-          echo "BASE64_APIDOC=test" >> $GITHUB_ENV
-      - name: Test Env variable
-        run: echo $BASE64_APIDOC
+      # - name: Encode API Doc 
+      #   run: |
+      #     export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
+      #     echo $BASE64_APIDOC
+      #     echo "BASE64_APIDOC=test" >> $GITHUB_ENV
+      # - name: Test Env variable
+      #   run: echo $BASE64_APIDOC
       - name: Send Request
         # working-directory: ./documentation
         run: |          
@@ -32,4 +32,4 @@ jobs:
           -H "Accept: application/vnd.github+json" \ 
           -H "Authorization: Bearer ${{ secrets.SPECS_REPO_PAT }}" \
           https://api.github.com/repos/verycamilo/swagger-ci-cd-poc/dispatches \
-          -d '{"event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v1", "doc": "${BASE64_APIDOC}"}}'
+          -d '{"event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v1", "doc": "$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)"}}'
