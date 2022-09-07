@@ -20,8 +20,8 @@ jobs:
         run: ls -ltah ${{ github.workspace }}
       - name: Encode API Doc 
         run: |
-          BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
-          echo "BASE64_APIDOC=${BASE64_APIDOC}" >> $GITHUB_ENV
+          export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
+          echo "BASE64_APIDOC=test" >> $GITHUB_ENV
       - name: Test Env variable
         run: echo $BASE64_APIDOC
       - name: Send Request
