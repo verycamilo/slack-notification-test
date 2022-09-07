@@ -19,7 +19,9 @@ jobs:
       - name: List files
         run: ls -ltah ${{ github.workspace }}
       - name: Encode API Doc 
-        run: echo "BASE64_APIDOC='$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)'" >> $GITHUB_ENV        
+        run: |
+          BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
+          echo "BASE64_APIDOC=${BASE64_APIDOC}" >> $GITHUB_ENV"
       - name: Test Env variable
         run: echo $BASE64_APIDOC
       - name: Send Request
