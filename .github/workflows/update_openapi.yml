@@ -17,8 +17,8 @@ jobs:
       - name: Send Request
         # working-directory: ./documentation
         run: |          
-          ls -ltah $GITHUB_WORKSPACE
-          BASE64_APIDOC=$(cat ${GITHUB_WORKSPACE}/documentation/openapi.yml | base64)        
+          ls -ltah ${{ github.workspace }}
+          BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)        
           curl -X POST \
           -H "Accept: application/vnd.github+json" \ 
           -H "Authorization: Bearer ${{ secrets.SPECS_REPO_PAT }}" \
