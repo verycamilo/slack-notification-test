@@ -15,8 +15,10 @@ jobs:
     if: ${{ github.event.action == 'completed' }}
     steps:
       - name: Send Request
+        working-directory: ./documentation
         run: |
-          BASE64_APIDOC=$(cat documentation/openapi.yml | base64)        
+          ls -ltah
+          BASE64_APIDOC=$(cat openapi.yml | base64)        
           curl -X POST \
           -H "Accept: application/vnd.github+json" \ 
           -H "Authorization: Bearer ${{ secrets.SPECS_REPO_PAT }}" \
