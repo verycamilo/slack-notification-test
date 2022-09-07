@@ -19,8 +19,13 @@ jobs:
       - name: Send Request
         run: |
           export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
-          export PAYLOAD_TEMPLATE='{"owner":"verycamilo","repo":"swagger-ci-cd-poc", "event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v1", "doc": "BASE64_APIDOC"}}'
-          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" '.doc = $BASE64_APIDOC' > payload.json
+          export PAYLOAD_TEMPLATE='{"owner":"verycamilo","repo":"swagger-ci-cd-poc", "event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v2", "doc": "BASE64_APIDOC"}}'
+          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" '.client_payload.doc = $BASE64_APIDOC' > payload.json
           cat payload.json
-          curl -X POST -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.SPECS_REPO_PAT }}" -d @payload.json https://api.github.com/repos/verycamilo/swagger-ci-cd-poc/dispatches
+          curl -v  \
+          -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer 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" \
+          --url https://api.github.com/repos/verycamilo/swagger-ci-cd-poc/dispatches \
+          -d @payload.json
 
