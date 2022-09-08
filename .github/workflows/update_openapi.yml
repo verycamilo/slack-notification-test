@@ -19,7 +19,7 @@ jobs:
       - name: Send Request
         run: |
           export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
-          export PAYLOAD_TEMPLATE='{ "event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v3", "doc": "BASE64_APIDOC"}}'
+          export PAYLOAD_TEMPLATE='{ "event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "v1", "doc": "BASE64_APIDOC"}}'
           echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" '.client_payload.doc = $BASE64_APIDOC' > payload.json
           curl -v  \
           -X POST \
