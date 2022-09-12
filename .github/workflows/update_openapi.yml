@@ -21,8 +21,8 @@ jobs:
           export BASE64_APIDOC=$(cat ${{ github.workspace }}/documentation/openapi.yml | base64)
           export TITLE=cat documentation/openapi.yml| yq .info.title
           export VERSION=cat documentation/openapi.yml| yq .info.version
-          export PAYLOAD_TEMPLATE='{ "event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "VERSION", "doc": "BASE64_APIDOC", "title":"TITLE"}}'
-          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" --arg TITLE "$TITLE" --arg VERSION="$VERSION"  '.client_payload.doc = $BASE64_APIDOC' | '.client_payload.title = $TITLE' | '.client_payload.version = $VERSION' | > payload.json
+          export PAYLOAD_TEMPLATE='{ "event_type":"process_openapi","client_payload":{"service":"slack-notification-test", "version": "VERSION", "doc": "BASE64_APIDOC", "":"TITLE"}}'          
+          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" --arg TITLE "${TITLE}" --arg VERSION "${VERSION}" '.client_payload.doc = $BASE64_APIDOC | .client_payload.title = $TITLE | .client_payload.version=$VERSION' > payload.json
           curl -v  \
           -X POST \
           -H "Accept: application/vnd.github+json" \
