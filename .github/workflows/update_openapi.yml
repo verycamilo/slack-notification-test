@@ -20,9 +20,10 @@ jobs:
         run: |
           export BASE64_APIDOC=$(cat ${{ github.workspace }}/${{ secrets.DOCUMENTATION_PATH }}  | base64)
           export TITLE=$(cat ${{ secrets.DOCUMENTATION_PATH }} | yq .info.title)
+          export DESCRIPTION=$(cat ${{ secrets.DOCUMENTATION_PATH }} | yq .info.description)
           export VERSION=$(cat ${{ secrets.DOCUMENTATION_PATH }} | yq .info.version)
-          export PAYLOAD_TEMPLATE='{ "event_type":"process_openapi","client_payload":{"service":"${{ github.event.repository.full_name }}", "version": "VERSION", "doc": "BASE64_APIDOC", "title":"TITLE", "stage":"${{ github.event.workflow_run.head_branch}}"}}'
-          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" --arg TITLE "${TITLE}" --arg VERSION "${VERSION}" '.client_payload.doc = $BASE64_APIDOC | .client_payload.title = $TITLE | .client_payload.version=$VERSION' > payload.json
+          export PAYLOAD_TEMPLATE='{ "event_type":"process_openapi","client_payload":{ "service": "${{ github.event.repository.full_name }}", "version": "VERSION", "doc": "BASE64_APIDOC", "title":"TITLE", "stage": "${{ github.event.workflow_run.head_branch}}", "description": "DESCRIPTION" } }'
+          echo $PAYLOAD_TEMPLATE | jq --arg BASE64_APIDOC "${BASE64_APIDOC}" --arg TITLE "${TITLE}" --arg VERSION "${VERSION}" --arg DESCRIPTION "${DESCRIPTION}" '.client_payload.doc = $BASE64_APIDOC | .client_payload.title = $TITLE | .client_payload.version=$VERSION | .client_payload.description=$DESCRIPTION ' > payload.json
           cat payload.json
           curl -v  \
           -X POST \
