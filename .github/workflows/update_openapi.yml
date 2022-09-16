@@ -3,12 +3,13 @@ name: Update OpenAPI
 on:
   workflow_run:
     workflows:
-      - Test, Build, and Deploy to AWS
+      - Test, Build, and Deploy
     types:
       - completed
 
 jobs:
   on-completed:
+    if: ${{ github.event.action == 'completed' }}
     uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main    
     secrets:
       token: ${{ secrets.SPECS_REPO_PAT }}
