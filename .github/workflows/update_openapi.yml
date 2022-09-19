@@ -8,6 +8,17 @@ on:
       - completed
 
 jobs:
+  
+  send-documentation:
+    uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
+    with:
+      documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
+      documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
+      stage: ${{ github.event.workflow_run.head_branch }}
+    secrets:
+      token: ${{ secrets.SPECS_REPO_PAT }}
+      
+# jobs:
   # set-stage:
   #   runs-on: ubuntu-latest
   #   name: Set Stage Name
@@ -24,14 +35,14 @@ jobs:
   #         else
   #           echo ::set-output name=stage::${{ github.event.workflow_run.head_branch }}
   #         fi
-  on-completed:
+  # on-completed:
     # needs: set-stage
-    name: Request Documenation Processing
-    uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
+    # name: Request Documenation Processing
+    # uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
     # if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.set-stage.outputs.stage )
-    with:
-      documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
-      documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
-      stage: ${{ github.event.workflow_run.head_branch }}
-    secrets:
-      token: ${{ secrets.SPECS_REPO_PAT }}
+    # with:
+    #   documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
+    #   documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
+    #   stage: ${{ github.event.workflow_run.head_branch }}
+    # secrets:
+    #   token: ${{ secrets.SPECS_REPO_PAT }}
