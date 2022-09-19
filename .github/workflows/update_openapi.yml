@@ -4,14 +4,13 @@ on:
   workflow_run:
     workflows:
       - Test, Build, and Deploy
-      - Deploy to Preprod
-      - Test, Build, and Deploy to Production
     types:
       - completed
 
 jobs:
   set-stage:
     runs-on: ubuntu-latest
+    name: Set Stage Name
     outputs:
       stage: ${{ steps.set-stage.outputs.stage }}
     steps:
@@ -25,14 +24,14 @@ jobs:
           else
             echo ::set-output name=stage::${{ github.event.workflow_run.head_branch }}
           fi
-
-  send-doc:
+  on-completed:
     needs: set-stage
-    if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.set-stage.outputs.stage )
+    name: Request Documenation Processing
     uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
+    if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.set-stage.outputs.stage )
     with:
       documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
       documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
-      stage: ${{ needs.set-stage.outputs.stage }}
+      stage: ${{needs.set-stage.outputs.stage}}
     secrets:
-      token: ${{ secrets.PAT }}
+      token: ${{ secrets.SPECS_REPO_PAT }}
