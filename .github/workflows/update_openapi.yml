@@ -3,51 +3,44 @@ name: Update OpenAPI
 on:
   workflow_run:
     workflows:
+      # - Deploy to Preprod
+      # - Test, Build, and Deploy to Production
       - Test, Build, and Deploy
     types:
       - completed
 
-env:  
-  documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
-  documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
-
 jobs:
-  
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.set-stage.outputs.stage }}
+      documentation_path:  ${{ steps.set-paths.outputs.documentation_path }}
+      documentation_repository:  ${{ steps.set-paths.outputs.documentation_repository }}
+    steps:
+      - id: set-stage
+        run: |
+          if [[ ${{ github.event.workflow_run.head_branch }} =~ ^main$ ]];
+          then
+              echo ::set-output name=stage::prod
+          elif [[ ${{ github.event.workflow_run.head_branch }} =~ ^release/*$ ]];
+              echo ::set-output name=stage::stage
+          else
+            echo ::set-output name=stage::${{ github.event.workflow_run.head_branch }}
+          fi
+      - id: set-paths
+        run: |
+          echo ::set-output name=documentation_path::${{ secrets.DOCUMENTATION_PATH }}
+          echo ::set-output name=documentation_repository::${{ secrets.DOCUMENTATION_REPOSITORY }}
   send-documentation:
+    needs: setup
+    if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.setup.outputs.stage )
+    #uses: BuddyTV/redwolf-github-workflows/.github/workflows/redwolf-cloud-update-documentation.yml@main
     uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
     with:
-      documentation_path: ${{ env.documentation_path }}
-      documentation_repository: ${{ env.documentation_repository }}
-      stage: ${{ github.event.workflow_run.head_branch }}
+      documentation_path: ${{ needs.setup.outputs.documentation_path }}
+      documentation_repository: ${{ needs.setup.outputs.documentation_repository }}
+      stage: ${{ needs.setup.outputs.stage }}
     secrets:
+      #token: ${{ secrets.PAT }}
       token: ${{ secrets.SPECS_REPO_PAT }}
 
-      
-# jobs:
-  # set-stage:
-  #   runs-on: ubuntu-latest
-  #   name: Set Stage Name
-  #   outputs:
-  #     stage: ${{ steps.set-stage.outputs.stage }}
-  #   steps:
-  #     - id: set-stage
-  #       run: |
-  #         if [[ ${{ github.event.workflow_run.head_branch }} =~ ^main$ ]];
-  #         then
-  #             echo ::set-output name=stage::prod
-  #         elif [[ ${{ github.event.workflow_run.head_branch }} =~ ^release/*$ ]];
-  #             echo ::set-output name=stage::stage
-  #         else
-  #           echo ::set-output name=stage::${{ github.event.workflow_run.head_branch }}
-  #         fi
-  # on-completed:
-    # needs: set-stage
-    # name: Request Documenation Processing
-    # uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
-    # if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.set-stage.outputs.stage )
-    # with:
-    #   documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
-    #   documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
-    #   stage: ${{ github.event.workflow_run.head_branch }}
-    # secrets:
-    #   token: ${{ secrets.SPECS_REPO_PAT }}
