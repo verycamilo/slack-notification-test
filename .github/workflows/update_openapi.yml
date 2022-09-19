@@ -7,16 +7,21 @@ on:
     types:
       - completed
 
+env:  
+  documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
+  documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
+
 jobs:
   
   send-documentation:
     uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
     with:
-      documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
-      documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
+      documentation_path: ${{ env.documentation_path }}
+      documentation_repository: ${{ env.documentation_repository }}
       stage: ${{ github.event.workflow_run.head_branch }}
     secrets:
       token: ${{ secrets.SPECS_REPO_PAT }}
+
       
 # jobs:
   # set-stage:
