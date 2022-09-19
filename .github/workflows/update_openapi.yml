@@ -3,16 +3,35 @@ name: Update OpenAPI
 on:
   workflow_run:
     workflows:
-      - Test, Build, and Deploy
+      - Deploy to Preprod
+      - Test, Build, and Deploy to Production
     types:
       - completed
 
 jobs:
-  on-completed:
-    if: ${{ github.event.action == 'completed' }}
-    uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main    
-    secrets:
-      token: ${{ secrets.SPECS_REPO_PAT }}
+  set-stage:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.set-stage.outputs.stage }}
+    steps:
+      - id: set-stage
+        run: |
+          if [[ ${{ github.event.workflow_run.head_branch }} =~ ^main$ ]];
+          then
+              echo ::set-output name=stage::prod
+          elif [[ ${{ github.event.workflow_run.head_branch }} =~ ^release/*$ ]];
+              echo ::set-output name=stage::stage
+          else
+            echo ::set-output name=stage::${{ github.event.workflow_run.head_branch }}
+          fi
+
+  send-doc:
+    needs: set-stage
+    if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.set-stage.outputs.stage )
+    uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
+    with:
       documentation_path: ${{ secrets.DOCUMENTATION_PATH }}
       documentation_repository: ${{ secrets.DOCUMENTATION_REPOSITORY }}
-
+      stage: ${{ needs.set-stage.outputs.stage }}
+    secrets:
+      token: ${{ secrets.PAT }}
