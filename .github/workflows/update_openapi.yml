@@ -3,6 +3,7 @@ name: Update OpenAPI
 on:
   workflow_run:
     workflows:
+      - Test, Build, and Deploy
       - Deploy to Preprod
       - Test, Build, and Deploy to Production
     types:
