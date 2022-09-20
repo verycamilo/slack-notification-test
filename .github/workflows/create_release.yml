@@ -6,11 +6,8 @@ on:
 
 jobs:
   send-documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo toJSON(github.event)
     
-    #uses: BuddyTV/redwolf-github-workflows/.github/workflows/redwolf-cloud-update-documentation.yml@main
-    uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
-    with:
-      documentation_path: documentation/openapi.yml
-    secrets:
-      #token: ${{ secrets.PAT }}
-      token: ${{ secrets.SPECS_REPO_PAT }}
