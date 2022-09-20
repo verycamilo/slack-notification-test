@@ -9,16 +9,11 @@ on:
     types:
       - completed
 
-env:
-  documentation_path: ${{secrets.DOCUMENTATION_PATH}}
-  documentation_repository: ${{secrets.DOCUMENTATION_REPOSITORY}}
 jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.set-stage.outputs.stage }}
-      documentation_path: ${{ steps.set-paths.outputs.documentation_path }}
-      documentation_repository: ${{ steps.set-paths.outputs.documentation_repository }}
     steps:
       - id: set-stage
         run: |
@@ -31,19 +26,14 @@ jobs:
           else
             echo "::set-output name=stage::${{ github.event.workflow_run.head_branch }}"
           fi
-      - id: set-paths
-        run: |
-          echo "::set-output name=documentation_path::${{env.documentation_path}}"
-          echo "::set-output name=documentation_repository::${{env.documentation_repository}}"
-
   send-documentation:
     needs: setup
     if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.setup.outputs.stage )
     #uses: BuddyTV/redwolf-github-workflows/.github/workflows/redwolf-cloud-update-documentation.yml@main
     uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
     with:
-      documentation_path: ${{needs.setup.outputs.documentation_path}}
-      documentation_repository: ${{needs.setup.outputs.documentation_repository}}
+      documentation_path: ${{secrets.DOCUMENTATION_PATH}}
+      documentation_repository: ${{secrets.DOCUMENTATION_REPOSITORY}}
       stage: ${{ needs.setup.outputs.stage }}
     secrets:
       #token: ${{ secrets.PAT }}
