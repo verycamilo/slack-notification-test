@@ -10,31 +10,13 @@ on:
       - completed
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      stage: ${{ steps.set-stage.outputs.stage }}
-    steps:
-      - id: set-stage
-        run: |
-          if [[ ${{ github.event.workflow_run.head_branch }} =~ ^main$ ]]
-          then
-              echo "::set-output name=stage::prod"
-          elif [[ ${{ github.event.workflow_run.head_branch }} =~ ^release/*-beta$ ]]
-          then
-              echo "::set-output name=stage::stage"
-          else
-            echo "::set-output name=stage::${{ github.event.workflow_run.head_branch }}"
-          fi
+  
   send-documentation:
-    needs: setup
-    if: contains(fromJSON('["develop", "stage", "preprod", "prod"]'), needs.setup.outputs.stage )
+    
     #uses: BuddyTV/redwolf-github-workflows/.github/workflows/redwolf-cloud-update-documentation.yml@main
     uses: verycamilo/swagger-ci-cd-poc/.github/workflows/update_api_documentation.yml@main
     with:
-      documentation_path: ${{secrets.DOCUMENTATION_PATH}}
-      documentation_repository: ${{secrets.DOCUMENTATION_REPOSITORY}}
-      stage: ${{ needs.setup.outputs.stage }}
+      documentation_path: documentation/openapi.yml
     secrets:
       #token: ${{ secrets.PAT }}
       token: ${{ secrets.SPECS_REPO_PAT }}
