@@ -6,6 +6,7 @@ on:
       # - Deploy to Preprod
       # - Test, Build, and Deploy to Production
       - Test, Build, and Deploy
+      - Create Release Branch
     types:
       - completed
 
