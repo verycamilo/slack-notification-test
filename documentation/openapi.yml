@@ -3,7 +3,7 @@ info:
   description: Redwolf Proxy Gateway
   version: '1.3.0'
   title: redwolf-proxy-gateway
-host: "dev.redwolf.external.plat.vizio.com"
+host: "prod.redwolf.external.plat.vizio.com"
 schemes:
   - https
 paths:
@@ -127,10 +127,6 @@ paths:
           type: string
         - name: Accept-Language
           in: header
-          required: false
-          type: string
-        - name: proxy
-          in: path
           required: false
           type: string
         - name: Accept
